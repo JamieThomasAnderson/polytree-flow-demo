@@ -10,7 +10,7 @@ const sourceHandleStyleB: CSSProperties = {
 const CustomNode: FC<NodeProps> = ({ data, xPos, yPos }) => {
   return (
     <>
-      <NodeResizer />
+      {/* <NodeResizer /> */}
       <Handle type="target" position={Position.Top} />
       <div>
         <div>
