@@ -15,7 +15,8 @@ const Home: NextPage = () => {
       </Head>
 
       <header className={styles.header}>React Flow - Next.js Example</header>
-      <Flow />
+        <Flow />
+      <h1>test</h1>
     </div>
   );
 };

@@ -1,20 +1,11 @@
 import { create } from 'zustand';
 import {
-  Connection,
-  Edge,
-  EdgeChange,
-  Node,
-  NodeChange,
-  addEdge,
-  OnNodesChange,
-  OnEdgesChange,
-  OnConnect,
-  applyNodeChanges,
-  applyEdgeChanges,
+  Edge, Node, Connection, EdgeChange, NodeChange, applyNodeChanges, applyEdgeChanges, addEdge, updateEdge 
 } from 'reactflow';
 
 import styles from './Flow.module.css';
 import CustomNode from './CustomNode';
+
 
 const initialNodes: Node[] = [
   {
@@ -48,7 +39,7 @@ const initialNodes: Node[] = [
 ];
 
 const initialEdges: Edge[] = [
-  { id: 'e1-2', source: '1', target: '2' },
+  { id: 'e1-2', source: '1', target: '2', label: 'poo' },
   { id: 'e1-3', source: '1', target: '3' },
 ];
 
@@ -56,39 +47,65 @@ const initialEdges: Edge[] = [
 type RFState = {
   nodes: Node[];
   edges: Edge[];
-  onNodesChange: OnNodesChange;
-  onEdgesChange: OnEdgesChange;
-  onConnect: OnConnect;
+  edgeUpdateSuccessful: boolean;
+  onNodesChange: (changes: NodeChange[]) => void;
+  onEdgesChange: (changes: EdgeChange[]) => void;
+  onConnect: (connection: Connection) => void;
+  onEdgeUpdateStart: () => void;
+  onEdgeUpdate: (oldEdge: Edge, newConnection: Connection) => void;
+  onEdgeUpdateEnd: (_:MouseEvent, edge: Edge) => void;
   setNodes: (nodes: Node[]) => void;
   setEdges: (edges: Edge[]) => void;
+  toggleEdgeUpdateSuccessful: () => void;
 };
 
-// this is our useStore hook that we can use in our components to get parts of the store and call actions
 const useStore = create<RFState>((set, get) => ({
   nodes: initialNodes,
   edges: initialEdges,
+  edgeUpdateSuccessful: true,
+
   onNodesChange: (changes: NodeChange[]) => {
     set({
       nodes: applyNodeChanges(changes, get().nodes),
     });
-
-    console.log(get().nodes);
   },
   onEdgesChange: (changes: EdgeChange[]) => {
     set({
       edges: applyEdgeChanges(changes, get().edges),
-    })
+    });
   },
   onConnect: (connection: Connection) => {
     set({
       edges: addEdge(connection, get().edges),
     });
   },
+  onEdgeUpdateStart: () => {
+    set({ edgeUpdateSuccessful: false });
+  },
+  onEdgeUpdate: (oldEdge: Edge, newConnection: Connection) => {
+    set({
+      edges: updateEdge(oldEdge, newConnection, get().edges),
+      edgeUpdateSuccessful: true,
+    });
+  },
+  onEdgeUpdateEnd: (_:MouseEvent, edge: Edge) => {
+    if (!get().edgeUpdateSuccessful) {
+      console.log(edge)
+      set({
+        edges: get().edges.filter((e) => e.id !== edge.id),
+      });
+    }
+
+    set({ edgeUpdateSuccessful: true });
+  },
   setNodes: (nodes: Node[]) => {
     set({ nodes });
   },
   setEdges: (edges: Edge[]) => {
     set({ edges });
+  },
+  toggleEdgeUpdateSuccessful: () => {
+    set((state) => ({ edgeUpdateSuccessful: !state.edgeUpdateSuccessful }));
   },
 }));
 

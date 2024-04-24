@@ -1,17 +1,29 @@
 import { memo, FC, CSSProperties } from 'react';
 import { Handle, Position, NodeProps, NodeResizer } from 'reactflow';
 
-const sourceHandleStyleA: CSSProperties = { left: 50 };
-const sourceHandleStyleB: CSSProperties = {
-  right: 50,
-  left: 'auto',
-};
+// Delete & Add Nodes
+// Note Node
+// Artical Node
+// Title Node
+// Groups
 
-const CustomNode: FC<NodeProps> = ({ data, xPos, yPos }) => {
+
+const CustomNode: FC<NodeProps> = ({ data, xPos, yPos, selected }) => {
   return (
     <>
-      {/* <NodeResizer /> */}
-      <Handle type="target" position={Position.Top} />
+      <NodeResizer color="#ff0071" isVisible={selected} minWidth={100} minHeight={30} />
+      <Handle 
+        type="target" 
+        position={Position.Top}
+        id="top"
+      />
+      
+      <Handle 
+        type="target" 
+        position={Position.Right}
+        id="right"
+      />
+
       <div>
         <div>
           Label: <strong>{data.label}</strong>
@@ -26,15 +38,13 @@ const CustomNode: FC<NodeProps> = ({ data, xPos, yPos }) => {
 
       <Handle
         type="source"
-        position={Position.Bottom}
-        id="a"
-        style={sourceHandleStyleA}
+        position={Position.Left}
+        id="left"
       />
       <Handle
         type="source"
         position={Position.Bottom}
-        id="b"
-        style={sourceHandleStyleB}
+        id="bottom"
       />
     </>
   );
