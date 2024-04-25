@@ -2,6 +2,7 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 
 import Flow from 'components/Flow';
+import DnDFlow from 'components/Flow/DnDFlow';
 
 import styles from '../styles/Home.module.css';
 
@@ -15,7 +16,7 @@ const Home: NextPage = () => {
       </Head>
 
       <header className={styles.header}>React Flow - Next.js Example</header>
-        <Flow />
+        <DnDFlow />
       <h1>test</h1>
     </div>
   );
